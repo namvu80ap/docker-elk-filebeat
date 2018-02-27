@@ -17,22 +17,6 @@ Based on the official Docker images:
 * ELK 6 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
 * ELK 6 with Search Guard: https://github.com/deviantony/docker-elk/tree/searchguard
 
-## Contents
-
-1. [Requirements](#requirements)
-   * [Host setup](#host-setup)
-   * [SELinux](#selinux)
-2. [Getting started](#getting-started)
-   * [Bringing up the stack](#bringing-up-the-stack)
-   * [Initial setup](#initial-setup)
-3. [Configuration](#configuration)
-   * [How can I tune the Kibana configuration?](#how-can-i-tune-the-kibana-configuration)
-   * [How can I tune the Elasticsearch configuration?](#how-can-i-tune-the-elasticsearch-configuration)
-   * [How can I scale out the Elasticsearch cluster?](#how-can-i-scale-up-the-elasticsearch-cluster)
-4. [Storage](#storage)
-   * [How can I persist Elasticsearch data?](#how-can-i-persist-elasticsearch-data)
-
-
 ## Requirements
 
 ### Host setup
@@ -60,13 +44,13 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 Start the ELK stack using `docker-compose`:
 
 ```console
-$ docker-compose -f docker-compose-elk up
+$ docker-compose -f docker-compose-elk.yml up
 ```
 
 You can also choose to run it in background (detached mode):
 
 ```console
-$ docker-compose -f docker-compose-elk up -d
+$ docker-compose -f docker-compose-elk.yml up -d
 ```
 
 Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
@@ -76,6 +60,8 @@ By default, the stack exposes the following ports:
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
+
+**Notice**: Kibana will ask you for basic auth username/password saved in filebeat.yml
 
 **WARNING**: If you're using `boot2docker`, you must access it via the `boot2docker` IP address instead of `localhost`.
 
@@ -97,53 +83,20 @@ Refer to [Connect Kibana with
 Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions
 about the index pattern configuration.
 
-#### On the command line
-
-Create an index pattern via the Kibana API:
-
-```console
-$ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
-    -H 'Content-Type: application/json' \
-    -H 'kbn-version: 6.2.1' \
-    -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
-```
-
-The created pattern will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the first time.
-
 ## Configuration
 
 **NOTE**: Configuration is not dynamically reloaded, you will need to restart the stack after any change in the
 configuration of a component.
 
-### How can I tune the Kibana configuration?
-
-The Kibana default configuration is stored in `kibana/config/kibana.yml`.
-
-It is also possible to map the entire `config` directory instead of a single file.
-
 ### How can I tune the filebeat configuration?
 
 The Filebeat configuration is stored in `filebeat/filebeat.yml`.
-
 
 ### How can I tune the Elasticsearch configuration?
 
 The Elasticsearch configuration is stored in `elasticsearch/config/elasticsearch.yml`.
 
-You can also specify the options you want to override directly via environment variables:
-
-```yml
-elasticsearch:
-
-  environment:
-    network.host: "_non_loopback_"
-    cluster.name: "my-cluster"
-```
-
 ### How can I scale out the Elasticsearch cluster?
-
-Follow the instructions from the Wiki: [Scaling out
-Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
 
 ## Storage
 

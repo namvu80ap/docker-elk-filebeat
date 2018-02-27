@@ -10,10 +10,10 @@ setup.dashboards.enabled: true
 setup.kibana:
   host: http://ai.lisuto.com:5601
   username: elastic
-  password: lisuto
+  password: youpassword
 
 output.elasticsearch:
   hosts: ["http://localhost:9200"]
   username: elastic
-  password: lisuto
+  password: youpassword
   index: "filebeat-%{[beat.version]}-%{+yyyy.MM.dd}"
