@@ -1,0 +1,19 @@
+filebeat.prospectors:
+- type: log
+  paths:
+    - /usr/share/filebeat/logs/*.log
+
+setup.template.name: "filebeat-"
+setup.template.pattern: "filebeat-*"
+setup.dashboards.enabled: true
+
+setup.kibana:
+  host: http://ai.lisuto.com:5601
+  username: elastic
+  password: lisuto
+
+output.elasticsearch:
+  hosts: ["http://localhost:9200"]
+  username: elastic
+  password: lisuto
+  index: "filebeat-%{[beat.version]}-%{+yyyy.MM.dd}"
